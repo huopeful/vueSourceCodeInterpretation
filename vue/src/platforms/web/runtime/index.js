@@ -39,7 +39,7 @@ Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && inBrowser ? query(el) : undefined
+  el = el && inBrowser ? query(el) : undefined  // 对el进行修正   和runtime-only版本的vue有关
   return mountComponent(this, el, hydrating)
 }
 

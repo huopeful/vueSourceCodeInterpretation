@@ -276,6 +276,7 @@ function checkComponents (options: Object) {
   }
 }
 
+// 对组件名称进行校验
 export function validateComponentName (name: string) {
   if (!new RegExp(`^[a-zA-Z][\\-\\.0-9_${unicodeRegExp.source}]*$`).test(name)) {
     warn(
@@ -283,6 +284,7 @@ export function validateComponentName (name: string) {
       'should conform to valid custom element name in html5 specification.'
     )
   }
+  // 是html保留的标签
   if (isBuiltInTag(name) || config.isReservedTag(name)) {
     warn(
       'Do not use built-in or reserved HTML elements as component ' +
@@ -383,7 +385,10 @@ function assertObjectType (name: string, value: any, vm: ?Component) {
 
 /**
  * Merge two option objects into a new one.
+ * 合并2个对象 将2个对象合并成为1个
  * Core utility used in both instantiation and inheritance.
+ * 用于实例化和继承的核心实用程序
+
  */
 export function mergeOptions (
   parent: Object,

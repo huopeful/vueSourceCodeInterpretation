@@ -19,21 +19,22 @@ Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && query(el)
+  el = el && query(el)  // 转化为dom对象
 
   /* istanbul ignore if */
-  if (el === document.body || el === document.documentElement) {
+  if (el === document.body || el === document.documentElement) {  // 判断dom对象是不是body或者html
     process.env.NODE_ENV !== 'production' && warn(
-      `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
+      `Do not mount Vue to <html> or <body> - mount to normal elements instead.`  // 报错 不要将Vue挂载到<html>或<body>-而是挂载到普通元素
     )
     return this
   }
 
   const options = this.$options
   // resolve template/el and convert to render function
-  if (!options.render) {
+  // 解析模板
+  if (!options.render) {  // 没有render方法
     let template = options.template
-    if (template) {
+    if (template) { // 是否有template
       if (typeof template === 'string') {
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
@@ -45,7 +46,7 @@ Vue.prototype.$mount = function (
             )
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { // 如果是dom对象
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -54,14 +55,14 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
-      template = getOuterHTML(el)
+      template = getOuterHTML(el) //转换为template
     }
     if (template) {
       /* istanbul ignore if */
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile')
       }
-
+      // 通过compileToFunctions(编译函数)生成一个render函数 赋值给options.render
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -79,6 +80,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 有了render函数之后,调用mount方法
   return mount.call(this, el, hydrating)
 }
 
@@ -87,11 +89,12 @@ Vue.prototype.$mount = function (
  * of SVG elements in IE as well.
  */
 function getOuterHTML (el: Element): string {
-  if (el.outerHTML) {
+  if (el.outerHTML) { // 获取该元素(包含子元素)的所以的字符串
     return el.outerHTML
   } else {
     const container = document.createElement('div')
     container.appendChild(el.cloneNode(true))
+    // 返回一个创建的dom元素
     return container.innerHTML
   }
 }

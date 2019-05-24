@@ -97,7 +97,7 @@ export function _createElement (
     children = simpleNormalizeChildren(children)
   }
   let vnode, ns
-  if (typeof tag === 'string') {  // tag可能是一个字符串,也可能是一个组件
+  if (typeof tag === 'string') {  // tag可能是一个字符串,也可能是一个组件 如果是一个组件的话,传入的是一个组件对象
     let Ctor
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag)
     if (config.isReservedTag(tag)) {  // 检查是不是平台的保留标签 html原生的标签
@@ -126,6 +126,7 @@ export function _createElement (
     }
   } else {
     // direct component options / constructor
+    // tag是组件的情况
     vnode = createComponent(tag, data, context, children)
   }
   if (Array.isArray(vnode)) {

@@ -15,30 +15,35 @@ export function initExtend (Vue: GlobalAPI) {
 
   /**
    * Class inheritance
+   * 类继承
+   * 用原型继承的方式返回一个子的构造器 (继承于Vue)
+   * 每个组件都有一个唯一的构造器 标识符号 cid
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}
-    const Super = this
+    const Super = this  // this 是 Vue
     const SuperId = Super.cid
+    // 缓存的优化
     const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
     if (cachedCtors[SuperId]) {
       return cachedCtors[SuperId]
     }
 
-    const name = extendOptions.name || Super.options.name
+    const name = extendOptions.name || Super.options.name // 组件name
     if (process.env.NODE_ENV !== 'production' && name) {
-      validateComponentName(name)
+      validateComponentName(name) // 校验组件name
     }
 
     const Sub = function VueComponent (options) {
       this._init(options)
     }
-    Sub.prototype = Object.create(Super.prototype)
-    Sub.prototype.constructor = Sub
-    Sub.cid = cid++
+    Sub.prototype = Object.create(Super.prototype)  // Sub的原型指向了Vue的原型 super 指 this 就是 Vue
+    Sub.prototype.constructor = Sub // Sub的构造器指向他自身
+    Sub.cid = cid++ // 用于唯一构造器的标识
+    // 合并options
     Sub.options = mergeOptions(
-      Super.options,
-      extendOptions
+      Super.options,  // vue 的 options
+      extendOptions   // 自身的options
     )
     Sub['super'] = Super
 
@@ -53,6 +58,7 @@ export function initExtend (Vue: GlobalAPI) {
     }
 
     // allow further extension/mixin/plugin usage
+    // 将 Vue中的一些方法给Sub  让Sub可以有vue一样的能力
     Sub.extend = Super.extend
     Sub.mixin = Super.mixin
     Sub.use = Super.use

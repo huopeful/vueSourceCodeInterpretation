@@ -30,18 +30,18 @@ export function setActiveInstance(vm: Component) {
 }
 
 export function initLifecycle (vm: Component) {
-  const options = vm.$options
+  const options = vm.$options // 子组件vm实例
 
   // locate first non-abstract parent
-  let parent = options.parent
+  let parent = options.parent // 父组件vm实例
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
-    parent.$children.push(vm)
+    parent.$children.push(vm)   // 将当前的vm实例添加到子组件数组中去
   }
 
-  vm.$parent = parent
+  vm.$parent = parent // 将当前的vm实例的父级指向parent这个对象
   vm.$root = parent ? parent.$root : vm
 
   vm.$children = []
@@ -58,12 +58,13 @@ export function initLifecycle (vm: Component) {
 export function lifecycleMixin (Vue: Class<Component>) {
   // 2种情况下会调用 首次渲染 数据的改变会驱动视图的变化,改变部分的DOM
   // 将VNode渲染成为真实的DOM
+  // 这里传入的参数 vnode是用于渲染的vnode
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
-    vm._vnode = vnode
+    vm._vnode = vnode // 渲染vnode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     // 首次渲染 prevVnode为null vnode 为 vnode元素 一个对象

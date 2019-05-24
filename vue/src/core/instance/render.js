@@ -82,6 +82,7 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
+    // 占位符vnode 父级vnode
     vm.$vnode = _parentVnode
     // render self
     let vnode
@@ -90,7 +91,7 @@ export function renderMixin (Vue: Class<Component>) {
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm
-      // 改变this指向
+      // 改变this指向 this指向当前vm的代理render 生成渲染vnode
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       // 给用户一个接口去处理错误
@@ -130,7 +131,7 @@ export function renderMixin (Vue: Class<Component>) {
       vnode = createEmptyVNode()
     }
     // set parent
-    vnode.parent = _parentVnode
+    vnode.parent = _parentVnode // 渲染的vnode的父级指向占位符vnode
     return vnode
   }
 }

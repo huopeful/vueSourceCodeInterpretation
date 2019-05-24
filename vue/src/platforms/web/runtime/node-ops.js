@@ -1,5 +1,8 @@
 /* @flow */
 
+/**
+ * 这个文件是对js原生的一些方法的封装
+ */
 import { namespaceMap } from 'web/util/index'
 
 export function createElement (tagName: string, vnode: VNode): Element {
