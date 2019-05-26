@@ -61,7 +61,7 @@ if (process.env.NODE_ENV !== 'production') {
         (typeof key === 'string' && key.charAt(0) === '_' && !(key in target.$data))  // 是否是vue全局或私有的方法
       if (!has && !isAllowed) {
         if (key in target.$data) warnReservedPrefix(target, key)
-        else warnNonPresent(target, key)  // 报错 没有进行定义的属性或方法
+        else warnNonPresent(target, key)  // 报错 没有进行定义的属性或方法  没有在data或者methods中定义
       }
       return has || !isAllowed
     }
@@ -78,7 +78,7 @@ if (process.env.NODE_ENV !== 'production') {
   }
 
   initProxy = function initProxy (vm) {
-    if (hasProxy) {
+    if (hasProxy) { // 判断浏览器是否支持proxy  proxy是对对象访问做劫持
       // determine which proxy handler to use
       const options = vm.$options
       const handlers = options.render && options.render._withStripped

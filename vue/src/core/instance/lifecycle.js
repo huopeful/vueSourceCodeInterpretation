@@ -142,17 +142,17 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
-export function mountComponent (
+export function mountComponent (  // 准备组件
   vm: Component,
   el: ?Element,
   hydrating?: boolean
 ): Component {
   vm.$el = el
-  if (!vm.$options.render) {
-    vm.$options.render = createEmptyVNode
+  if (!vm.$options.render) {  // 如果options中没有render方法  或者是在template中转换失败了
+    vm.$options.render = createEmptyVNode // 创建一个空的VNode
     if (process.env.NODE_ENV !== 'production') {
       /* istanbul ignore if */
-      if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
+      if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') || // 使用的template 但是不是用#号
         vm.$options.el || el) {
         warn(
           'You are using the runtime-only build of Vue where the template ' +

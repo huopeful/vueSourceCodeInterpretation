@@ -122,6 +122,10 @@ export function createPatchFunction (backend) {
 
   let creatingElmInVPre = 0
 
+  // 创建节点 先挂载子节点(insert) 再挂载父 最总挂载到一个真实的dom
+  // createElm 先调用createChildren创建子节点 createChildren其中递归的调用 createElm 
+  // 其中createElm方法中 createChildren 是在insert(插入节点,挂载节点)方法之前的 所以(递归)先将子节点挂载(insert)到父节上面完成,再回来挂载父节点
+  // 在createChildren方法递归中 将目前的节点(vnode.elm)作为 parentElm(父节点) 参数传进去
   function createElm (
     vnode,
     insertedVnodeQueue,
@@ -166,7 +170,7 @@ export function createPatchFunction (backend) {
 
       vnode.elm = vnode.ns
         ? nodeOps.createElementNS(vnode.ns, tag)
-        : nodeOps.createElement(tag, vnode)
+        : nodeOps.createElement(tag, vnode) // 创建该节点
       setScope(vnode)
 
       /* istanbul ignore if */
@@ -189,7 +193,7 @@ export function createPatchFunction (backend) {
           insert(parentElm, vnode.elm, refElm)
         }
       } else {
-        // 将vnode进行遍历 如果vnode还有子节点就递归的调用createElm 将父节点传进去
+        // createChildren 如果有children就创建子节点 没有就什么也不干 将vnode进行遍历 如果vnode还有子节点就递归的调用createElm 将父节点传进去
         createChildren(vnode, children, insertedVnodeQueue)
         if (isDef(data)) {
           invokeCreateHooks(vnode, insertedVnodeQueue)
@@ -201,12 +205,12 @@ export function createPatchFunction (backend) {
       if (process.env.NODE_ENV !== 'production' && data && data.pre) {
         creatingElmInVPre--
       }
-    } else if (isTrue(vnode.isComment)) {
+    } else if (isTrue(vnode.isComment)) { // 注释节点
       vnode.elm = nodeOps.createComment(vnode.text)
-      insert(parentElm, vnode.elm, refElm)
+      insert(parentElm, vnode.elm, refElm)  // 挂载节点
     } else {
       vnode.elm = nodeOps.createTextNode(vnode.text)
-      insert(parentElm, vnode.elm, refElm)
+      insert(parentElm, vnode.elm, refElm)  // 挂载节点
     }
   }
 
@@ -271,11 +275,11 @@ export function createPatchFunction (backend) {
     // a reactivated keep-alive component doesn't insert itself
     insert(parentElm, vnode.elm, refElm)
   }
-  // 真实的去插入dom
+  // 真实的去插入dom  ref 参考节点
   function insert (parent, elm, ref) {
     if (isDef(parent)) {
       if (isDef(ref)) {
-        if (nodeOps.parentNode(ref) === parent) {
+        if (nodeOps.parentNode(ref) === parent) { // 如果ref(参考节点)和传入的父节点相同就在后面插入 否则作为子节点
           nodeOps.insertBefore(parent, elm, ref)  // insertBefore 原生方法的封装  插入元素
         }
       } else {
@@ -762,7 +766,7 @@ export function createPatchFunction (backend) {
           // leaving transition. Only happens when combining transition +
           // keep-alive + HOCs. (#4590)
           oldElm._leaveCb ? null : parentElm,
-          nodeOps.nextSibling(oldElm)
+          nodeOps.nextSibling(oldElm) // 第一次找相邻的元素作为参照元素
         )
 
         // update parent placeholder node element, recursively
@@ -796,8 +800,8 @@ export function createPatchFunction (backend) {
           }
         }
 
-        // destroy old node
-        if (isDef(parentElm)) { // 之前定义了一个节点 现在又定义了一个节点,将之前的节点销毁
+        // destroy old node ??
+        if (isDef(parentElm)) { // 会发现body中有2个#app的 div标签
           removeVnodes([oldVnode], 0, 0)  // 创建一个新的节点,将旧的节点替换  会发现body中有2个#app的 div标签
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode)
@@ -805,6 +809,7 @@ export function createPatchFunction (backend) {
       }
     }
 
+    // 插入钩子函数
     invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)
     return vnode.elm
   }

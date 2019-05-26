@@ -46,7 +46,7 @@ export function initMixin (Vue: Class<Component>) {
     if (process.env.NODE_ENV !== 'production') {
       initProxy(vm) // 进行初始化代理 找出报错 提示报错信息
     } else {
-      vm._renderProxy = vm
+      vm._renderProxy = vm  // 开发阶段
     }
     // expose real self
     vm._self = vm

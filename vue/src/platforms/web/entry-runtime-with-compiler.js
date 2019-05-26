@@ -9,12 +9,13 @@ import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'
 import { shouldDecodeNewlines, shouldDecodeNewlinesForHref } from './util/compat'
 
+// 创建缓存   
 const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
 
-const mount = Vue.prototype.$mount
+const mount = Vue.prototype.$mount  // 在web/compiler/runtime/index.js 中定义$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
@@ -40,13 +41,13 @@ Vue.prototype.$mount = function (
           template = idToTemplate(template)
           /* istanbul ignore if */
           if (process.env.NODE_ENV !== 'production' && !template) {
-            warn(
+            warn( //没有template 报错
               `Template element not found or is empty: ${options.template}`,
               this
             )
           }
         }
-      } else if (template.nodeType) { // 如果是dom对象
+      } else if (template.nodeType) { // nodeType 元素节点返回1 属性节点返回2
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -55,6 +56,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      // 没有template方法 使用getOuterHTML 在外面包一层
       template = getOuterHTML(el) //转换为template
     }
     if (template) {

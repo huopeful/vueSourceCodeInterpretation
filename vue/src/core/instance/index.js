@@ -6,6 +6,7 @@ import { lifecycleMixin } from './lifecycle'
 import { warn } from '../util/index'
 
 // vue是一个function实现的一个class
+// options new Vue 的时候传入的一个对象
 function Vue (options) {
   // process (进程对象) 是一个全局变量，它提供有关当前 Node.js 进程的信息并对其进行控制。 作为一个全局变量，它始终可供 Node.js 应用程序使用，无需使用 require()。
   if (process.env.NODE_ENV !== 'production' &&

@@ -152,6 +152,7 @@ export function hasOwn (obj: Object | Array<*>, key: string): boolean {
 
 /**
  * Create a cached version of a pure function.
+ * 创建一个缓存的方法
  */
 export function cached<F: Function> (fn: F): F {
   const cache = Object.create(null)

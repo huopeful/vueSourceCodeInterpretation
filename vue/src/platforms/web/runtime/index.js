@@ -31,7 +31,7 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
-// inBrowser 判断是否在浏览器环境  vue也可以用于服务端
+// inBrowser 判断是否在浏览器环境  vue也可以用于服务端  服务端没有dom
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method
@@ -39,7 +39,7 @@ Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && inBrowser ? query(el) : undefined  // 对el进行修正   和runtime-only版本的vue有关
+  el = el && inBrowser ? query(el) : undefined  // 对el进行修正   和runtime-only版本的vue有关 给runtime-only版本进行复用的
   return mountComponent(this, el, hydrating)
 }
 
